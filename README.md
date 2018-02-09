@@ -1,3 +1,3 @@
 # bookstore
 
-https://watikuka.github.io/bookstore/
+https://watkazuki.github.io/bookstore/
