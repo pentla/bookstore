@@ -1,4 +1,3 @@
-/* global createjs*/
 
 var book = {};
 
