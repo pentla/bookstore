@@ -1,44 +1,49 @@
 
-var book = {};
+function Book() {
+  var book = {};
+  this.init()
+};
 
-//	ステージの作成、ステージ更新の設定、ステージに載せる画像の設定
-book.init = function(){
+Book.prototype.init = function() {
+
+  //  canvasからcanvasのステージを作成
   book.stage = new createjs.Stage('canvas');
-  book.img = {};
 
+  //  フレームレートの設定(easel.js)
   createjs.Ticker.framerate = 30;
-  createjs.Ticker.addEventListener('tick', function(){
+  createjs.Ticker.addEventListener('tick', function() {
     book.stage.update();
   });
 
+  //  画像の読み込み(preload.js)
   var manifest = [
-    {'src': 'lib.jpg', 'id': 'lib'},
-    {'src': 'white.jpg', 'id':'white'},
-    {'src': 'wood.jpg', 'id':'wood'},
-    {'src': 'blue.jpg', 'id': 'blue'},
+    {'src': 'lib.jpg',    'id': 'lib'},
+    {'src': 'white.jpg',  'id':'white'},
+    {'src': 'wood.jpg',   'id':'wood'},
+    {'src': 'blue.jpg',   'id': 'blue'},
     {'src': 'baloon.png', 'id': 'baloon'},
-    {'src': 'up.png', 'id': 'up'},
-    {'src': 'down.png', 'id': 'down'},
-    {'src': 'a0.jpg', 'id':'a0'},
-    {'src': 'a1.jpg', 'id':'a1'},
-    {'src': 'a2.jpg', 'id':'a2'},
-    {'src': 'a3.jpg', 'id':'a3'},
-    {'src': 'a4.jpg', 'id':'a4'},
-    {'src': 'a5.jpg', 'id':'a5'},
-    {'src': 'a6.jpg', 'id':'a6'},
-    {'src': 'a7.jpg', 'id':'a7'},
-    {'src': 'a8.jpg', 'id':'a8'},
-    {'src': 'a9.jpg', 'id':'a9'},
-    {'src': 'a10.jpg', 'id':'a10'},
+    {'src': 'up.png',     'id': 'up'},
+    {'src': 'down.png',   'id': 'down'},
+    {'src': 'a0.jpg',     'id':'a0'},
+    {'src': 'a1.jpg',     'id':'a1'},
+    {'src': 'a2.jpg',     'id':'a2'},
+    {'src': 'a3.jpg',     'id':'a3'},
+    {'src': 'a4.jpg',     'id':'a4'},
+    {'src': 'a5.jpg',     'id':'a5'},
+    {'src': 'a6.jpg',     'id':'a6'},
+    {'src': 'a7.jpg',     'id':'a7'},
+    {'src': 'a8.jpg',     'id':'a8'},
+    {'src': 'a9.jpg',     'id':'a9'},
+    {'src': 'a10.jpg',     'id':'a10'}
   ];
   book.loader = new createjs.LoadQueue(false);
   book.loader.loadManifest(manifest, true, 'img/');
-  book.loader.on('complete', book.drawCampus);
+  book.loader.on('complete', this.draw.bind(this));
 };
 
 
 //	画像の読み込みが終わり次第呼ばれる
-book.drawCampus = function(){
+Book.prototype.draw = function(){
   book.img.backimg = new createjs.Bitmap(book.loader.getResult('lib'));
   book.stage.addChild(book.img.backimg);
 
@@ -52,9 +57,9 @@ book.drawCampus = function(){
 
 
 };
-book.init();
 
-book.createBookShelf_A = function(){
+
+Book.prototype.createBookShelf_A = function() {
   var bookShelf = new createjs.Container();
   bookShelf.x = 500;
   bookShelf.y = 30;
@@ -89,7 +94,7 @@ book.createBookShelf_A = function(){
   book.stage.addChild(bookShelf);
 };
 
-book.makeBaloon = function(book_,i)
+Book.prototype.makeBaloon = function(book_, i)
 {
   book_.addEventListener('click', function(){
 
@@ -117,3 +122,5 @@ book.makeBaloon = function(book_,i)
     book.stage.addChild(baloonContainer);
   });
 };
+
+var Bookshelf = new Book();
