@@ -1,19 +1,16 @@
 
-function Book() {
-  var book = {};
-  this.init()
-};
+function Book() { this.init() };
 
 Book.prototype.init = function() {
 
   //  canvasからcanvasのステージを作成
-  book.stage = new createjs.Stage('canvas');
+  this.stage = new createjs.Stage('canvas');
 
   //  フレームレートの設定(easel.js)
   createjs.Ticker.framerate = 30;
   createjs.Ticker.addEventListener('tick', function() {
-    book.stage.update();
-  });
+    this.stage.update();
+  }.bind(this));
 
   //  画像の読み込み(preload.js)
   var manifest = [
@@ -36,91 +33,96 @@ Book.prototype.init = function() {
     {'src': 'a9.jpg',     'id':'a9'},
     {'src': 'a10.jpg',     'id':'a10'}
   ];
-  book.loader = new createjs.LoadQueue(false);
-  book.loader.loadManifest(manifest, true, 'img/');
-  book.loader.on('complete', this.draw.bind(this));
+
+  this.loader = new createjs.LoadQueue(false);
+  this.loader.loadManifest(manifest, true, 'img/');
+  this.loader.on('complete', this.draw.bind(this));
 };
 
 
-//	画像の読み込みが終わり次第呼ばれる
-Book.prototype.draw = function(){
-  book.img.backimg = new createjs.Bitmap(book.loader.getResult('lib'));
-  book.stage.addChild(book.img.backimg);
+//  描画
+Book.prototype.draw = function() {
+  this.back_image = new createjs.Bitmap(this.loader.getResult('lib'));
+  this.stage.addChild(this.back_image);
 
-  book.up = new createjs.Bitmap(book.loader.getResult('up'));
-  book.up.scaleX = book.up.scaleY = 2;
-  book.up.x = 450;
-  book.up.y = 100;
-  book.stage.addChild(book.up);
+  var up = new createjs.Bitmap(this.loader.getResult('up'));
+  up.scaleX = up.scaleY = 2;
+  up.x = 450;
+  up.y = 100;
+  this.stage.addChild(up);
 
-  book.createBookShelf_A(book.shelf_a);
-
-
+  this.createBookShelf();
 };
 
 
-Book.prototype.createBookShelf_A = function() {
-  var bookShelf = new createjs.Container();
-  bookShelf.x = 500;
-  bookShelf.y = 30;
+Book.prototype.createBookShelf = function() {
+  var shelf_container = new createjs.Container();
+  shelf_container.x = 500;
+  shelf_container.y = 30;
+
   //	棚の設定
-  var shelf = new createjs.Bitmap(book.loader.getResult('blue'));
-  bookShelf.addChild(shelf);
+  var shelf = new createjs.Bitmap(this.loader.getResult('blue'));
+  shelf_container.addChild(shelf);
 
-  //	本の画像の読み込み
 
   //	読み込みが終わり次第棚に追加していく
-  book.list = [];
+  var list = [];
+  var self = this;
   for(var i = 0; i <= 10;i++)
   {
-    (function(){
-      book.list[i] = new createjs.Bitmap(book.loader.getResult('a' + String(i)));
-      book.list[i].scaleX = book.list[i].scaleY = 0.4;
+    (function() {
+
+      //  本の位置の設定
+      list[i] = new createjs.Bitmap(self.loader.getResult('a' + i));
+      list[i].scaleX = list[i].scaleY = 0.4;
       if(i <= 4){
-        book.list[i].x = 50 + i * 60;
-        book.list[i].y = 10;
+        list[i].x = 50 + i * 60;
+        list[i].y = 10;
       } else if (i <= 9) {
-        book.list[i].x = 50 + (i - 5) * 60;
-        book.list[i].y = 130;
+        list[i].x = 50 + (i - 5) * 60;
+        list[i].y = 130;
       } else if (i <= 14) {
-        book.list[i].x = 50 + (i - 10) * 60;
-        book.list[i].y = 240;
+        list[i].x = 50 + (i - 10) * 60;
+        list[i].y = 240;
       }
-      book.makeBaloon(book.list[i],i);
-      bookShelf.addChild(book.list[i]);
+
+      self.makeBaloon(list[i],i);
+      shelf_container.addChild(list[i]);
     })();
   }
-  // createBitmap_book();
-  book.stage.addChild(bookShelf);
+
+  this.stage.addChild(shelf_container);
 };
 
-Book.prototype.makeBaloon = function(book_, i)
-{
-  book_.addEventListener('click', function(){
+Book.prototype.makeBaloon = function(book_, i) {
+
+  book_.addEventListener('click', function() {
 
     var baloonContainer = new createjs.Container();
     baloonContainer.set({
       x: 60,
       y: 50
     });
-    var baloon = new createjs.Bitmap(book.loader.getResult('baloon'));
+
+    var baloon = new createjs.Bitmap(this.loader.getResult('baloon'));
     baloon.set({
       scaleX: 1.1,
       scaleY: 1.3
     });
     baloonContainer.addChild(baloon);
 
-    var bookimg = new createjs.Bitmap(book.loader.getResult('a' + String(i)));
-    bookimg.x = 20;
-    bookimg.y = 50;
-    bookimg.scaleX = bookimg.scaleY = 0.6;
-    baloonContainer.addChild(bookimg);
-    book.img.backimg.addEventListener('click', function(){
-      book.stage.removeChild(baloonContainer);
-    });
+    var book_image = new createjs.Bitmap(this.loader.getResult('a' + String(i)));
+    book_image.x = 20;
+    book_image.y = 50;
+    book_image.scaleX = book_image.scaleY = 0.6;
+    baloonContainer.addChild(book_image);
 
-    book.stage.addChild(baloonContainer);
-  });
+    this.back_image.addEventListener('click', function() {
+      this.stage.removeChild(baloonContainer);
+    }.bind());
+
+    this.stage.addChild(baloonContainer);
+  }.bind(this));
 };
 
 var Bookshelf = new Book();
