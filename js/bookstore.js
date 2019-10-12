@@ -13,7 +13,7 @@ Book.prototype.init = function() {
   }.bind(this));
 
   //  画像の読み込み(preload.js)
-  var manifest = [
+  this.manifest = [
     {'src': 'lib.jpg',    'id': 'lib'},
     {'src': 'blue.jpg',   'id': 'blue'},
     {'src': 'baloon.png', 'id': 'baloon'},
@@ -33,7 +33,7 @@ Book.prototype.init = function() {
   ];
 
   this.loader = new createjs.LoadQueue(false);
-  this.loader.loadManifest(manifest, true, 'img/');
+  this.loader.loadManifest(this.manifest, true, 'img/');
   this.loader.on('complete', this.draw.bind(this));
 };
 
@@ -62,14 +62,10 @@ Book.prototype.createBookShelf = function() {
   var shelf = new createjs.Bitmap(this.loader.getResult('blue'));
   shelf_container.addChild(shelf);
 
-
   //	読み込みが終わり次第棚に追加していく
   var list = [];
   var self = this;
-  for(var i = 0; i <= 10;i++)
-  {
-    (function() {
-
+  for(var i = 0; i <= 10;i++) {
       //  本の位置の設定
       list[i] = new createjs.Bitmap(self.loader.getResult('a' + i));
       list[i].scaleX = list[i].scaleY = 0.4;
@@ -86,7 +82,6 @@ Book.prototype.createBookShelf = function() {
 
       self.makeBaloon(list[i],i);
       shelf_container.addChild(list[i]);
-    })();
   }
 
   this.stage.addChild(shelf_container);
@@ -97,16 +92,10 @@ Book.prototype.makeBaloon = function(book_, i) {
   book_.addEventListener('click', function() {
 
     var baloonContainer = new createjs.Container();
-    baloonContainer.set({
-      x: 60,
-      y: 50
-    });
+    baloonContainer.set({ x: 60, y: 50 });
 
     var baloon = new createjs.Bitmap(this.loader.getResult('baloon'));
-    baloon.set({
-      scaleX: 1.1,
-      scaleY: 1.3
-    });
+    baloon.set({ scaleX: 1.1, scaleY: 1.3 });
     baloonContainer.addChild(baloon);
 
     var book_image = new createjs.Bitmap(this.loader.getResult('a' + String(i)));
