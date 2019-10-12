@@ -15,8 +15,6 @@ Book.prototype.init = function() {
   //  画像の読み込み(preload.js)
   var manifest = [
     {'src': 'lib.jpg',    'id': 'lib'},
-    {'src': 'white.jpg',  'id':'white'},
-    {'src': 'wood.jpg',   'id':'wood'},
     {'src': 'blue.jpg',   'id': 'blue'},
     {'src': 'baloon.png', 'id': 'baloon'},
     {'src': 'up.png',     'id': 'up'},
